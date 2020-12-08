@@ -20,7 +20,6 @@ class Binary_Dataset(Dataset):
         self.df_attr=pd.read_csv(labels_dir)
         self.df=self.df_attr[label] #dataframe of the chosen label
         self.img_names=self.df_attr["image_id"] #dataframe of image ids
-        self.size=self.df.shape[0]
 
         #change -1 to 0 in csv, remove this if not needed
         #########################
@@ -30,13 +29,13 @@ class Binary_Dataset(Dataset):
     def __len__(self):
         #return the length of the column of df_attr
         #####################################################
-        size = 90000 #size above about 50,000 has issues no clue why
+        size = 50000 #self.df.shape[0] #100000 #size above about 50,000 has issues no clue why
         #####################################################
         return size
     
     def __getitem__(self, idx):
         #load image
-        image_path=os.path.join(self.image_dir,self.img_names[idx])
+        image_path=os.path.join(self.image_dir,self.img_names[idx+10])
         image = io.imread(image_path)
         #print(self.size)
 
