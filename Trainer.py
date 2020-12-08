@@ -4,7 +4,12 @@
 
 def train_loop(model,dataloader,epochs,optimizer):
     for epoch in range(1, epochs+1):
-        train(optomizer, epoch)
+        model.train()
+        train_loss = 0
+        train_correct = 0
+        data=iter(dataset_loader)
+        for sample, target in data:
+            print(target)
 
 
 
@@ -13,6 +18,7 @@ def train_loop(model,dataloader,epochs,optimizer):
 
 
 
+"""
 def train(optimizer, epoch):
     
     model.train()
@@ -43,3 +49,4 @@ def train(optimizer, epoch):
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tTrain Loss: {:.6f}'.format(
                 epoch, batch_index, len(train_loader),
                 100.0 * batch_index / len(train_loader), loss.item()/ bs))
+"""
