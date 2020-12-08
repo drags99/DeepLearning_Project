@@ -29,7 +29,7 @@ class Binary_Dataset(Dataset):
     def __len__(self):
         #return the length of the column of df_attr
         #####################################################
-        size = 50000 #self.df.shape[0] #100000 #size above about 50,000 has issues no clue why
+        size = self.df.shape[0] #100000 #size above about 50,000 has issues no clue why
         #####################################################
         return size
     
