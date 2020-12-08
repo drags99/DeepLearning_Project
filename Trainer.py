@@ -5,8 +5,8 @@
 def train_loop(model,dataloader,epochs,optimizer):
     for epoch in range(1, epochs+1):
         model.train()
-        train_loss = 0
-        train_correct = 0
+
+        
         data=iter(dataset_loader)
         for sample, target in data:
             print(target)
