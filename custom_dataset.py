@@ -18,7 +18,7 @@ class Binary_Dataset(Dataset):
         self.image_dir=image_dir
         self.transformers=transform #transforms
         self.df_attr=pd.read_csv(labels_dir)
-        self.df=self.df_attr[label] #dataframe of the chosen label
+        self.df=self.df_attr[self.label] #dataframe of the chosen label
         self.img_names=self.df_attr["image_id"] #dataframe of image ids
 
         #change -1 to 0 in csv, remove this if not needed
@@ -35,7 +35,7 @@ class Binary_Dataset(Dataset):
     
     def __getitem__(self, idx):
         #load image
-        image_path=os.path.join(self.image_dir,self.img_names[idx+10])
+        image_path=os.path.join(self.image_dir,self.img_names[idx])
         image = io.imread(image_path)
         #print(self.size)
 
