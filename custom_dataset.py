@@ -54,7 +54,7 @@ class Binary_Dataset(Dataset):
         print(self.df_attr.info())
         
 
-        tensor_image=image
+        tensor_image=self.transformers(image)
 
         #set label
         label=self.df[idx]

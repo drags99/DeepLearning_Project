@@ -1,45 +1,39 @@
 #define training loop function
 #send model, dataloader, epochs, optimizer, 
+import torch
+from torch.nn import CrossEntropyLoss
 
-
-def train_loop(model,dataloader,epochs,optimizer):
+def train_loop(model,dataloader,epochs,optimizer,save_name):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     for epoch in range(1, epochs+1):
-        train(optomizer, epoch)
+        model.train()
+        total_loss=0
+
+        data=iter(dataloader)
+        batch_index=0
+        for batch in data:
+            batch_index+=1
+            #print(batch_index)
+            #print(batch)
+            sample, target = batch
+
+            sample=sample.to(device)
+            target=target.to(device)
+            #print(target)
+            #print(sample.size())
+            output=model(sample)
+
+            criteria=CrossEntropyLoss()  ########define type of loss function here
+            loss=criteria(output, target)
+            
+            total_loss+=loss
 
 
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-
-
-
-
-
-def train(optimizer, epoch):
-    
-    model.train()
-    
-    train_loss = 0
-    train_correct = 0
-    
-    for batch_index, batch_samples in enumerate(train_loader):
-        data, target = batch_samples['img'].to(device), batch_samples['label'].to(device)
-
-        optimizer.zero_grad()
-        output = model(data)
-        criteria = nn.CrossEntropyLoss()
-        loss = criteria(output, target.long())
-        train_loss += criteria(output, target.long())
-
-
-        
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        
-        pred = output.argmax(dim=1, keepdim=True)
-        train_correct += pred.eq(target.long().view_as(pred)).sum().item()
-    
-        # Display progress and write to tensorboard
-        if batch_index % bs == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tTrain Loss: {:.6f}'.format(
-                epoch, batch_index, len(train_loader),
-                100.0 * batch_index / len(train_loader), loss.item()/ bs))
+            if batch_index % 100 == 0:
+                print(total_loss)
+                torch.save(model.state_dict(),save_name+".pt")  
+                total_loss=0
