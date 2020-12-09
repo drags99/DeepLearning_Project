@@ -91,6 +91,8 @@ class Inception3(nn.Module):
         inception_e = inception_blocks[5]
         inception_aux = inception_blocks[6]
 
+        self.extraction_x = []
+
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         self.Conv2d_1a_3x3 = conv_block(3, 32, kernel_size=3, stride=2)
@@ -188,28 +190,33 @@ class Inception3(nn.Module):
         x = self.dropout(x)
         # N x 2048 x 1 x 1
         x = torch.flatten(x, 1)
+
+        self.extraction_x = x.detach().clone()
+        print(self.extraction_x)
+
+
         # N x 2048
         x = self.fc(x)
         # N x 1000 (num_classes)
-        return x , aux
+        return x, aux, self.extraction_x
 
     @torch.jit.unused
-    def eager_outputs(self, x: Tensor, aux: Optional[Tensor]) -> InceptionOutputs:
+    def eager_outputs(self, x: Tensor, aux: Optional[Tensor], extraction_x) -> InceptionOutputs:
         if self.training and self.aux_logits:
-            return InceptionOutputs(x, aux)
+            return InceptionOutputs(x, aux, extraction_x)
         else:
-            return x  # type: ignore[return-value]
+            return x, extraction_x # type: ignore[return-value]
 
     def forward(self, x: Tensor) -> InceptionOutputs:
         x = self._transform_input(x)
-        x, aux = self._forward(x)
+        x, aux, self.extraction_x = self._forward(x)
         aux_defined = self.training and self.aux_logits
         if torch.jit.is_scripting():
             if not aux_defined:
                 warnings.warn("Scripted Inception3 always returns Inception3 Tuple")
-            return InceptionOutputs(x, aux)
+            return InceptionOutputs(x, aux, self.extraction_x)
         else:
-            return self.eager_outputs(x, aux)
+            return self.eager_outputs(x, aux, self.extraction_x)
 
 
 class InceptionA(nn.Module):
