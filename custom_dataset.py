@@ -71,6 +71,7 @@ class Multi_Dataset(Dataset):
     #pass composed transform in transform
         self.labels_dir=labels_dir
         self.labels=label
+        
         self.image_dir=image_dir
         self.transformers=transform #transforms
         self.partition = partition
@@ -85,7 +86,6 @@ class Multi_Dataset(Dataset):
         
         #print(self.df_attr[self.labels].head)
         self.df=self.df_attr[self.labels] #dataframe of the chosen label
-        self.df.iloc[1]
         self.img_names=self.df_attr["image_id"] #dataframe of image ids
 
         #change -1 to 0 in csv, remove this if not needed
@@ -96,12 +96,13 @@ class Multi_Dataset(Dataset):
     def __len__(self):
         #return the length of the column of df_attr
         #####################################################
-        size = 5 #self.df.shape[0]  #100000 #size above about 50,000 has issues no clue why
+        size = self.df.shape[0]  #100000 #size above about 50,000 has issues no clue why
         #####################################################
         return size
     
     def __getitem__(self, idx):
-        print(self.df.iloc[idx])
+        #print(idx)
+        #print(self.trim_ds.iloc[[idx],[0:len(self.labels)]])
         #load image
         
         image_path=os.path.join(self.image_dir,self.img_names[idx])

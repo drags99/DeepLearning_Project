@@ -25,16 +25,17 @@ def multi_train_loop(learning_rate,batch_size,labels,model,dataloader,epochs,opt
             #print(target)
             #print(sample.size())
             output=model(sample)
+            
 
-            criteria=MSELoss(reduction="none") #CrossEntropyLoss()  ########define type of loss function here
+            criteria=MSELoss(reduction="sum") #CrossEntropyLoss()  ########define type of loss function here
             loss=criteria(output, target) #vector since no reduction
             
             #define set of weights to multiply by loss vector then do back propagation
-            weighted_loss=torch.sum(loss*W)
-            print(weighted_loss)
-            weighted_loss.backward(retain_graph=True)
-            W-=learning_rate*W.grad
-            print(W.item)
+            #weighted_loss=torch.sum(loss*W)
+            #print(weighted_loss)
+            #weighted_loss.backward(retain_graph=True)
+            #W-=learning_rate*W.grad
+            #print(W.item)
 
             total_loss+=loss
 
