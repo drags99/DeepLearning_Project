@@ -101,7 +101,7 @@ class Multi_Dataset(Dataset):
         return size
     
     def __getitem__(self, idx):
-        #print(idx)
+        # print(idx)
         #print(self.trim_ds.iloc[[idx],[0:len(self.labels)]])
         #load image
         
